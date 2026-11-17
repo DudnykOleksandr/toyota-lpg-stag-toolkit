@@ -1,0 +1,39 @@
+# Large vendor files (AC STAG installer and docs archive) - keep out of git
+*.exe
+DocsAcStag-*.zip
+docs/stag/*.pdf
+
+# Python
+__pycache__/
+*.pyc
+
+# Simulator test runs
+logs/*_sim.*
+analysis/*_sim/
+
+# AC STAG demo recordings (vendor files) and derived test files
+stag/osc_format/*.osc
+stag/osc_format/*.csv
+
+# Skill test runs
+skill-workspace/
+
+# Android (android/): build output, local SDK path, IDE files
+android/.gradle/
+android/.kotlin/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+*.iml
+
+# Your own data: trip logs, reports, AC STAG recordings and settings backups stay local
+logs/*
+analysis/*
+stag/osc/*
+stag/backup/*
+stag/screens/*
+!logs/.gitkeep
+!analysis/.gitkeep
+!stag/osc/.gitkeep
+!stag/backup/.gitkeep

@@ -1,0 +1,58 @@
+{
+  "skill_name": "lpg-gbo-tuning",
+  "evals": [
+    {
+      "id": 1,
+      "name": "analyze-logs-recommend-multiplier",
+      "prompt": "ось лог з поїздки logs/elm_20260925_224354_sim.csv і запис стага stag/osc_format/_test_sim.osc (проєкт C:\\Projects\\TotyotaLpgCalibration). проаналізуй і скажи що конкретно крутити в AC STAG, у мене QBOX Basic",
+      "expected_output": "Runs the analyzer (or equivalent), finds gas ~5-7 % rich vs petrol at ~1500-3000 rpm / MAP 0.35-0.65 bar with petrol injection time ~3-4.5 ms, recommends backing up settings first, then lowering the multiplier points in that injection-time range by a few percent in small steps (not the full 6 %), checking ISA-3 state, and a verification drive.",
+      "files": [
+        "logs/elm_20260925_224354_sim.csv",
+        "stag/osc_format/_test_sim.osc"
+      ],
+      "assertions": [
+        "Identifies that gas is RICH versus petrol (negative gas trims / positive Stag D), magnitude roughly 5-7 %",
+        "Localises the problem zone: about 1500-3000 rpm and/or MAP 0.35-0.65 bar and/or petrol injection time about 3-4.5 ms",
+        "Tells the user to back up settings (Инструменты -> Сохранить настройки or equivalent) before changing anything",
+        "Recommends LOWERING multiplier points (not raising) in the affected injection-time range",
+        "Recommends a partial/small step and a verification drive rather than a single blanket full correction",
+        "Mentions checking whether ISA-3 autoadaptation is enabled and how it interacts with manual changes",
+        "Expresses the change as a percentage of each point's current value (explicitly not as absolute multiplier numbers to type in)",
+        "Warns that the input data come from the simulator and must not be applied to the real car as-is"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "consumption-rise-where-to-start",
+      "prompt": "У мене Opel Astra H 1.6 з Stag QBOX Plus, газ почав жерти 13 л замість 10, чек не горить, їжджу так само як завжди. Майстер каже просто перекалібрувати автокалібровкою. З чого почати?",
+      "expected_output": "Structured plan: verify real consumption properly, list likely causes ranked (winter mix, filters, reducer pressure, injector wear, thermostat, sensors, calibration drift), explain that closed loop hides calibration errors, recommend logging trims gas vs petrol and Stag data before changing anything, backup before autocalibration and explain what autocalibration overwrites.",
+      "files": [],
+      "assertions": [
+        "Advises against simply running autocalibration as the fix and explains it only sets the idle point",
+        "States that autocalibration overwrites the current calibration (multiplier / working pressure)",
+        "Recommends verifying real consumption properly (several fill-ups, same season/route)",
+        "Recommends comparing fuel trims (STFT/LTFT) on gas vs petrol at the same operating points",
+        "Mentions gas filters and reducer pressure sag under load as checks",
+        "Recommends comparing the actual gas pressure in the monitor with the configured 'Рабочее давление'",
+        "Mentions coolant temperature / thermostat as a possible cause",
+        "Tells the user to back up the current Stag settings before any recalibration",
+        "Does NOT present a clogged air filter as a cause of higher consumption or of positive trims (passes if not mentioned or correctly dismissed)"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "delete-maps-safety",
+      "prompt": "в AC STAG на вкладці Карты біля множника бачу синій і зелений хрестики. можна їх натиснути щоб почистити старі карти перед калібровкою? блок QBOX basic",
+      "expected_output": "Identifies the icons as 'Удалить B' and 'Удалить G', explains that map B is the reference for ISA-3 autoadaptation (present on newer BASIC firmware) and that deleting loses history, advises checking ISA-3 state and saving settings/screenshots first, and explains when clearing is reasonable.",
+      "files": [],
+      "assertions": [
+        "Identifies the icons as deleting map B (petrol) and map G (gas) ('Удалить B' / 'Удалить G')",
+        "Explicitly explains that map B is the reference for ISA-3 autoadaptation (which exists on newer QBOX BASIC firmware)",
+        "Recommends saving settings / screenshots before any deletion",
+        "Recommends not deleting by default, or only in specific justified situations, rather than opening with a 'yes'",
+        "Suggests looking at the current deviation map D before deleting (it is free diagnostics that deletion destroys)",
+        "Does NOT say the gas map G can be deleted freely without caveat"
+      ]
+    }
+  ]
+}
